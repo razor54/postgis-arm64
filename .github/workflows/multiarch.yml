@@ -13,18 +13,22 @@ defaults:
 jobs:
 
   make-docker-images:
+
     strategy:
       matrix:
         # list compatible with arm64; exclude the latest version set for use with "include" below
-        postgres: [13]
+        postgres: ['9.6', 10, 11, 12, 13]
         postgis: ['3.2']
         latest: [false]
         include:  # only use the single latest version set with "include"
         - postgres: 14
           postgis: '3.2'
           latest: true
+
     name: Build docker image for ${{ matrix.postgres }}-${{ matrix.postgis }}
+
     runs-on: ubuntu-20.04
+
     env:
       VERSION: ${{ matrix.postgres }}-${{ matrix.postgis }}
 
