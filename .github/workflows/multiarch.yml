@@ -56,6 +56,19 @@ jobs:
           type=raw,value=${{ env.VERSION }},enable=true,priority=200
           type=raw,value=latest,enable=${{ matrix.latest }},priority=200
 
+    - name: Docker meta alpine
+      id: meta-alpine
+      uses: docker/metadata-action@e5622373a38e60fb6d795a4421e56882f2d7a681
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/postgis-alpine
+        labels: |
+          org.opencontainers.image.title=postgis-apline
+          org.opencontainers.image.version=${{ env.VERSION }}
+          org.opencontainers.image.base.name=docker.io/postgis/postgis:${{ env.VERSION }}
+        tags: |
+          type=raw,value=${{ env.VERSION }},enable=true,priority=200
+          type=raw,value=latest,enable=${{ matrix.latest }},priority=200
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@42d299face0c5c43a0487c477f595ac9cf22f1a7
       with:
@@ -81,7 +94,7 @@ jobs:
         platforms: linux/amd64,linux/arm64
         context: github.com/postgis/docker-postgis#master
         file: ${{ env.VERSION }}/alpine/Dockerfile
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ steps.meta-alpine.outputs.tags }}
+        labels: ${{ steps.meta-alpine.outputs.labels }}
         pull: true
         push: ${{ (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request') && !env.ACT }}
