@@ -1,4 +1,4 @@
-# Fork of postgis/postgis
+# postgis/postgis image built with multiarch
 
 This is a fork of [postgis/postgis](https://github.com/postgis/docker-postgis/actions) in order to
 rebuild the Debian container as a multiarch image for `linux/amd64` and `linux/arm64`. This

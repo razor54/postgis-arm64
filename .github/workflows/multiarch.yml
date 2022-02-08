@@ -3,6 +3,7 @@ name: Docker PostGIS CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
   schedule:
     - cron: '15 5 * * 2'  # Weekly, 1 day after the upstream
 
@@ -69,6 +70,17 @@ jobs:
         platforms: linux/amd64,linux/arm64
         context: github.com/postgis/docker-postgis#master
         file: ${{ env.VERSION }}/Dockerfile
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        pull: true
+        push: ${{ (github.ref == 'refs/heads/multiarch') && (github.event_name != 'pull_request') && !env.ACT }}
+
+    - name: Multi-platform build and push alpine
+      uses: docker/build-push-action@7f9d37fa544684fb73bfe4835ed7214c255ce02b
+      with:
+        platforms: linux/amd64,linux/arm64
+        context: github.com/postgis/docker-postgis#master
+        file: ${{ env.VERSION }}/alpine/Dockerfile
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         pull: true
